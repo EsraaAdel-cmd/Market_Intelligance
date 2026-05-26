@@ -62,7 +62,17 @@ ORANGE = ["#0c0c14","#431407","#9a3412","#f97316","#fdba74"]
 
 def ask_groq(question, context):
     headers = {"Authorization": f"Bearer {GROQ_KEY}", "Content-Type": "application/json"}
-    payload = {"model": "llama-3.3-70b-versatile", "messages": [{"role": "system", "content": f"You are a market analyst. Data: {context}. Be concise, max 200 words, use bullets, reference specific numbers from the data. Always respond in Arabic."}, {"role": "user", "content": question}], "temperature": 0.7, "max_tokens": 500}
+    payload = {"model": "llama-3.3-70b-versatile", "messages": [{"role": "system", "content": f"You are a market analyst. Data: {context}. Always respond in Arabic. Structure your response clearly like this:
+## الإجابة
+[إجابة مباشرة في جملة واحدة]
+
+## التفاصيل
+[نقاط مرتبة بشكل واضح، كل نقطة في سطر]
+
+## الخلاصة
+[جملة ختامية واحدة]
+
+Use specific numbers from the data. Max 200 words."}, {"role": "user", "content": question}], "temperature": 0.7, "max_tokens": 500}
     try:
         r = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=15)
         return r.json()["choices"][0]["message"]["content"]
