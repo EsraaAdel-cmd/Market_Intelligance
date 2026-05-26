@@ -1,4 +1,3 @@
-import os
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -192,9 +191,10 @@ elif page == "AI Analyst":
     total_f = len(filtered)
     cats_f = filtered["category"].nunique()
     five_s = len(filtered[filtered["rating"]==5])
+    worst_value = filtered[filtered["rating"]==1].nlargest(5,"price")[["title","category","price"]].to_dict("records")
     avg_rating_by_cat = filtered.groupby("category")["rating"].mean().sort_values(ascending=False).head(10).to_dict()
     best_value = filtered[filtered["rating"]==5].nsmallest(5,"price")[["title","category","price"]].to_dict("records")
-    data_context = f"Total:{total_f} | Categories:{cats_f} | Price:£{min_p:.2f}-£{max_p:.2f} | AvgPrice:£{avg_p:.2f} | AvgRating:{avg_r:.2f} | 5star:{five_s} | TopCats:{top5_cats} | AvgPriceByCat:{top5_price} | RatingDist:{rating_dist} | AvgRatingByCat:{avg_rating_by_cat} | BestValue5Star:{best_value}"
+    data_context = f"Total:{total_f} | Categories:{cats_f} | Price:£{min_p:.2f}-£{max_p:.2f} | AvgPrice:£{avg_p:.2f} | AvgRating:{avg_r:.2f} | 5star:{five_s} | TopCats:{top5_cats} | AvgPriceByCat:{top5_price} | RatingDist:{rating_dist} | AvgRatingByCat:{avg_rating_by_cat} | BestValue5Star:{best_value} | WorstValue:{worst_value}"
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
     st.markdown('<div class="chart-card"><div class="chart-title">Quick Prompts</div>', unsafe_allow_html=True)
