@@ -40,7 +40,7 @@ section[data-testid="stSidebar"] { background: #0c0c14 !important; border-right:
 </style>
 """, unsafe_allow_html=True)
 
-GROQ_KEY = "os.environ.get("GROQ_API_KEY", "")"
+GROQ_KEY = os.environ.get("GROQ_API_KEY", "")
 
 @st.cache_data
 def load_data():
