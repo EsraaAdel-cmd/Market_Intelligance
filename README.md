@@ -1,1 +1,1 @@
-# Smart Market Intelligence Platform
+# Market Intelligence Dashboard
