@@ -62,7 +62,7 @@ ORANGE = ["#0c0c14","#431407","#9a3412","#f97316","#fdba74"]
 
 def ask_groq(question, context):
     headers = {"Authorization": f"Bearer {GROQ_KEY}", "Content-Type": "application/json"}
-    payload = {"model": "llama-3.3-70b-versatile", "messages": [{"role": "system", "content": f"You are a market analyst. Data: {context}. Be concise, max 200 words, use bullets, reference numbers. Respond in user language."}, {"role": "user", "content": question}], "temperature": 0.7, "max_tokens": 500}
+    payload = {"model": "llama-3.3-70b-versatile", "messages": [{"role": "system", "content": f"You are a market analyst. Data: {context}. Be concise, max 200 words, use bullets, reference specific numbers from the data. Always respond in Arabic."}, {"role": "user", "content": question}], "temperature": 0.7, "max_tokens": 500}
     try:
         r = requests.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=payload, timeout=15)
         return r.json()["choices"][0]["message"]["content"]
@@ -196,6 +196,7 @@ elif page == "AI Analyst":
     worst_value = filtered[filtered["rating"]==1].nlargest(5,"price")[["title","category","price"]].to_dict("records")
     avg_rating_by_cat = filtered.groupby("category")["rating"].mean().sort_values(ascending=False).head(10).to_dict()
     best_value = filtered[filtered["rating"]==5].nsmallest(5,"price")[["title","category","price"]].to_dict("records")
+    worst_books = filtered.assign(score=filtered["rating"] - filtered["price"]/10).nsmallest(5,"score")[["title","category","price","rating"]].to_dict("records")
     data_context = f"Total:{total_f} | Categories:{cats_f} | Price:£{min_p:.2f}-£{max_p:.2f} | AvgPrice:£{avg_p:.2f} | AvgRating:{avg_r:.2f} | 5star:{five_s} | TopCats:{top5_cats} | AvgPriceByCat:{top5_price} | RatingDist:{rating_dist} | AvgRatingByCat:{avg_rating_by_cat} | BestValue5Star:{best_value} | WorstValue:{worst_value}"
     if "chat_history" not in st.session_state:
         st.session_state.chat_history = []
