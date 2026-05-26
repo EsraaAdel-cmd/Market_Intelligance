@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -39,7 +40,7 @@ section[data-testid="stSidebar"] { background: #0c0c14 !important; border-right:
 </style>
 """, unsafe_allow_html=True)
 
-GROQ_KEY = os.environ.get("GROQ_API_KEY", "")
+GROQ_KEY = "os.environ.get("GROQ_API_KEY", "")"
 
 @st.cache_data
 def load_data():
@@ -191,6 +192,7 @@ elif page == "AI Analyst":
     total_f = len(filtered)
     cats_f = filtered["category"].nunique()
     five_s = len(filtered[filtered["rating"]==5])
+    worst_value = filtered[filtered["rating"]==1].nlargest(5,"price")[["title","category","price"]].to_dict("records")
     worst_value = filtered[filtered["rating"]==1].nlargest(5,"price")[["title","category","price"]].to_dict("records")
     avg_rating_by_cat = filtered.groupby("category")["rating"].mean().sort_values(ascending=False).head(10).to_dict()
     best_value = filtered[filtered["rating"]==5].nsmallest(5,"price")[["title","category","price"]].to_dict("records")
